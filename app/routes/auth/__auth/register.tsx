@@ -5,6 +5,7 @@ import { db } from '~/utils/db.server'
 import { validateUser } from '~/utils/helper'
 
 type User = {
+  email: string
   username: string
   password: string
 }
@@ -19,15 +20,28 @@ export const action: ActionFunction = async ({ request }) => {
   const body = await request.formData()
   const bodyData = Object.fromEntries(body) as User
 
-  const validationErrors = validateUser({ ...bodyData })
+  const validationErrors = validateUser({ ...bodyData, isSignup: true })
   if (validationErrors) return validationErrors
 
-  const userExists = await db.user.findUnique({
+  const userExists = await db.user.findFirst({
     where: {
-      username: bodyData.username
+      OR: [
+        {
+          email: bodyData.email
+        },
+        {
+          username: bodyData.username
+        }
+      ]
     }
   })
-  if (userExists) return { msg: `User with username ${bodyData.username} already exists` }
+
+  console.log({ userExists })
+  if (userExists) {
+    if (userExists.username === bodyData.username)
+      return { msg: `User with username ${bodyData.username} already exists` }
+    if (userExists.email === bodyData.email) return { msg: `User with this email already exists` }
+  }
 
   const user = await register({ ...bodyData })
   return createUserSession(user.id, '/')
@@ -39,7 +53,7 @@ export default function Register() {
   const transition = useTransition()
 
   return (
-    <div className='w-full max-w-xs h-80'>
+    <div className='w-full max-w-xs'>
       <Form method='post' className='bg-white shadow-md rounded px-6 pt-6 pb-8 mb-4 h-full'>
         <p className='mb-3 text-center text-xl font-bold'>Register</p>
         <div className='mb-4'>
@@ -53,6 +67,19 @@ export default function Register() {
             name='username'
             type='text'
             placeholder='Username'
+          />
+        </div>
+        <div className='mb-4'>
+          <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='email'>
+            Email
+          </label>
+          <input
+            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+              errors?.email ? 'border-red-500' : null
+            }`}
+            name='email'
+            type='email'
+            placeholder='Email'
           />
         </div>
         <div className='mb-6'>
@@ -84,7 +111,9 @@ export default function Register() {
             Log in?
           </Link>
         </div>
-        {errors && !errors?.msg ? <p className='text-red-500 my-1 text-xs'>username/password are required!</p> : null}
+        {errors && !errors?.msg ? (
+          <p className='text-red-500 my-1 text-xs'>username/password/email are required!</p>
+        ) : null}
         {errors?.msg ? <p className='text-red-500 my-1 text-xs'>{errors.msg}</p> : null}
       </Form>
     </div>

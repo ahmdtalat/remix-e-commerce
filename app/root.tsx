@@ -6,6 +6,7 @@ import styles from './tailwind.css'
 export function links() {
   return [{ rel: 'stylesheet', href: styles }]
 }
+
 export default function App() {
   return (
     <html lang='en'>
@@ -18,8 +19,8 @@ export default function App() {
       <body>
         <Layout>
           <Outlet />
-          <ScrollRestoration />
           <Scripts />
+          <ScrollRestoration />
           {process.env.NODE_ENV === 'development' ? <LiveReload /> : null}
         </Layout>
       </body>

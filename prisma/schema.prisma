@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,16 +8,46 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  username String @unique
-  password String
-  msgs     Msg[]
+  id          String        @id @default(uuid())
+  email       String        @unique
+  username    String        @unique
+  password    String
+  role        Role          @default(USER)
+  userProduct UserProduct[]
 }
 
-model Msg {
-  id        String   @id @default(cuid())
-  body      String
-  user      User     @relation(fields: [userID], references: [id])
+model Product {
+  id          String        @id @default(cuid())
+  title       String
+  price       Decimal
+  description String
+  category    String
+  image       String
+  sold        Int           @default(0)
+  quantity    Int
+  rating      Rating?
+  userProduct UserProduct[]
+}
+
+model UserProduct {
+  productID String
   userID    String
   createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productID], references: [id])
+  user      User     @relation(fields: [userID], references: [id])
+
+  @@id([userID, productID])
+}
+
+model Rating {
+  id        String  @id @default(uuid())
+  rate      Decimal
+  count     Int
+  productID String  @unique
+  product   Product @relation(fields: [productID], references: [id], onDelete: Cascade)
+}
+
+enum Role {
+  USER
+  ADMIN
 }

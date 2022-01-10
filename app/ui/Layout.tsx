@@ -6,7 +6,7 @@ interface Props {
 
 const Layout = ({ children }: Props) => {
   return (
-    <div className='flex flex-col items-center justify-center h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500'>
+    <div className='flex flex-col items-center h-screen justify-center overflow-hidden bg-gradient-to-r from-gray-300 via-purple-300 to-gray-300'>
       {children}
     </div>
   )

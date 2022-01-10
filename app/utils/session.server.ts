@@ -7,6 +7,12 @@ type LoginForm = {
   password: string
 }
 
+type RegisterForm = {
+  email: string
+  username: string
+  password: string
+}
+
 const sessionSecret = process.env.SESSION_SECRET
 if (!sessionSecret) {
   throw new Error('SESSION_SECRET must be set!')
@@ -14,7 +20,7 @@ if (!sessionSecret) {
 
 export const storage = createCookieSessionStorage({
   cookie: {
-    name: '__session',
+    name: 'auth__session',
     secure: true,
     secrets: [sessionSecret],
     sameSite: 'lax',
@@ -46,11 +52,12 @@ export async function login({ username, password }: LoginForm) {
   return user
 }
 
-export async function register({ username, password }: LoginForm) {
+export async function register({ username, email, password }: RegisterForm) {
   const hashedPassword = await bcrypt.hash(password, 10)
 
   return await db.user.create({
     data: {
+      email,
       username,
       password: hashedPassword
     }
@@ -82,22 +89,4 @@ export async function getUser(request: Request) {
 
   if (!user) throw await logout(request)
   return user
-}
-
-export const getMsgs = async () => {
-  return db.msg.findMany({
-    select: {
-      id: true,
-      body: true,
-      userID: true,
-      user: {
-        select: {
-          username: true
-        }
-      }
-    },
-    orderBy: {
-      createdAt: 'asc'
-    }
-  })
 }
