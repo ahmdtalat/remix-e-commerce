@@ -36,7 +36,6 @@ export const action: ActionFunction = async ({ request }) => {
     }
   })
 
-  console.log({ userExists })
   if (userExists) {
     if (userExists.username === bodyData.username)
       return { msg: `User with username ${bodyData.username} already exists` }

@@ -44,7 +44,7 @@ const Navbar = ({ user, totalItemsCount }: { user: User; totalItemsCount: number
                 aria-hidden='true'
                 onClick={() => setIsOpen(false)}
               />
-              <div className='inline-block absolute -right-8 top-12 w-align-bottom bg-white  rounded-lg text-left overflow-hidden shadow-xl transform transition-all  sm:align-middle p-8'>
+              <div className='inline-block absolute -right-8 top-12 w-align-bottom bg-white  rounded-lg text-left overflow-hidden shadow-xl transform transition-all  sm:align-middle p-8 w-fit'>
                 <form method='post' action='/auth/logout'>
                   <button className='bg-blue-700 w-32  hover:bg-blue-500 text-white font-bold py-2 px-4 rounded'>
                     Logout

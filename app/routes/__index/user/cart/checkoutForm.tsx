@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
 
 function CheckOutForm() {
@@ -7,35 +7,6 @@ function CheckOutForm() {
 
   const [message, setMessage] = useState<string | null | undefined>(null)
   const [isLoading, setIsLoading] = useState(false)
-
-  useEffect(() => {
-    if (!stripe) {
-      return
-    }
-
-    const clientSecret = new URLSearchParams(window.location.search).get('payment_intent_client_secret')
-
-    if (!clientSecret) {
-      return
-    }
-
-    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-      switch (paymentIntent?.status) {
-        case 'succeeded':
-          setMessage('Payment succeeded!')
-          break
-        case 'processing':
-          setMessage('Your payment is processing.')
-          break
-        case 'requires_payment_method':
-          setMessage('Your payment was not successful, please try again.')
-          break
-        default:
-          setMessage('Something went wrong.')
-          break
-      }
-    })
-  }, [stripe])
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault()
