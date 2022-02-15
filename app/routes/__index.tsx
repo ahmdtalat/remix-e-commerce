@@ -5,7 +5,10 @@ import Navbar from '~/ui/Navbar'
 import { getUser } from '~/utils/session.server'
 import { Cart } from './__index/products/$id'
 
-export const loader: LoaderFunction = async ({ request }) => getUser(request)
+export const loader: LoaderFunction = async ({ request }) => {
+  const user = await getUser(request)
+  return user
+}
 
 export default function Index() {
   const user = useLoaderData()

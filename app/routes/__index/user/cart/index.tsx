@@ -1,7 +1,7 @@
 import { Link, useOutletContext } from 'remix'
 import { useEffect, useMemo, useState } from 'react'
 
-import { Cart, OutletContext } from '../products/$id'
+import { Cart, OutletContext } from '../../products/$id'
 
 export const meta = () => ({
   title: 'User | Cart'
@@ -76,9 +76,11 @@ const Cart = () => {
             .toString()
             .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
         </span>
-        <button className='bg-yellow-500 hover:bg-orange-300 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline min-w-full h-14 mt-4 shadow-md'>
-          Proceed to Buy
-        </button>
+        <Link to='./checkout'>
+          <button className='bg-yellow-500 hover:bg-orange-300 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline min-w-full h-14 mt-4 shadow-md'>
+            Proceed to Buy
+          </button>
+        </Link>
       </div>
     </div>
   )

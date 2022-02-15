@@ -5,7 +5,7 @@ import { db } from '~/utils/db.server'
 import { PRODUCT } from '~/ui/Product'
 import Rating from '~/ui/Rating'
 
-type Item = {
+export type Item = {
   id: string
   title: string
   image: string
